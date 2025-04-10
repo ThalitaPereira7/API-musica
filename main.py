@@ -32,7 +32,7 @@ async def raiz():
 async def get_musicas():
     return musicas
 
-@app.get("/musicas/{musica_id}")
+@app.get("/musicas/{musica_id}", description="Retorna uma música específica", summary="Retorna uma música por ID")
 async def get_musicas(musica_id: int):
     try:
         musica = musicas[musica_id]
@@ -47,6 +47,31 @@ async def post_musica(musica: Optional[Musica] = None):
     del musica.id
     return musica
 
+@app.delete("/musicas/delete/{musica_id}", description="Deleta uma musica específica", summary="Deleta uma música por ID")
+async def delete_musica(musica_id: int):
+    try:
+        del musicas[musica_id]
+        return {"msg": f"Música com ID {musica_id} deletada com sucesso."}
+    except KeyError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Não existe música com o ID {musica_id} para deletar."
+        )
+        
+@app.put("/musicas/atualizar/{musica_id}", description="Atualiza as informações de uma musica", summary="Atualiza uma musica por ID")
+async def put_musica(musica_id: int, musica: Musica):
+    try:
+        if musica_id not in musicas:
+            raise KeyError  
+        
+        musicas[musica_id] = musica.dict(exclude_unset=True)
+        return musicas[musica_id]
+    
+    except KeyError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"Não existe música com o ID {musica_id} para atualizar."
+        )
 
 if  __name__ == "__main__":
     import uvicorn
