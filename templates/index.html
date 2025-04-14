@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Músicas</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>🎵 Lista de Músicas</h1>
+    <form method="get" action="/front">
+        <input type="text" name="busca" placeholder="Buscar por título...">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <a href="/adicionar" style="margin-bottom: 20px; display: inline-block;">
+        <button type="button">Adicionar Música</button>
+      </a>
+      
+      {% for id, musica in musicas.items() %}
+        <div class="musica-card">
+          <img src="{{ musica['foto'] }}" alt="Capa da música" width="150">
+          <h3>{{ musica['titulo'] }}</h3>
+          <p>Cantor: {{ musica['cantor'] }}</p>
+          <p>Gênero: {{ musica['genero'] }}</p>
+          <p>Ano: {{ musica['ano'] }}</p>
+      
+          <!-- Botão para editar -->
+          <a href="/editar/{{ id }}">Editar</a>
+      
+          <!-- Botão para excluir -->
+          <form method="post" action="/deletar/{{ id }}" style="display:inline;">
+            <button type="submit" onclick="return confirm('Deseja realmente excluir esta música?')">Excluir</button>
+          </form>
+        </div>
+      {% endfor %}
+</body>
+</html>
